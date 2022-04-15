@@ -61,6 +61,7 @@
 
 	self.renderer = renderer;
 	self.view = view;
+	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 
 	view.renderer = self.renderer;
 	view.delegate = self;
@@ -172,7 +173,13 @@
 }
 
 - (BOOL)shouldAutorotate {
+	NSLog(@"YYYYY<<<<<< %ld", [UIDevice currentDevice].orientation);
+	NSLog(@"UIDeviceOrientationIsPortrait<<<<<< %ld", UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation));
+	NSLog(@"UIDeviceOrientationIsLandscape<<<<<< %ld", UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation));
+	NSLog(@"UIDeviceOrientationIsFlat<<<<<< %ld", UIDeviceOrientationIsFlat([UIDevice currentDevice].orientation));
+
 	if (!OSIPhone::get_singleton()) {
+		NSLog(@"NOOOOOO");
 		return NO;
 	}
 
@@ -180,17 +187,22 @@
 		case OS::SCREEN_SENSOR:
 		case OS::SCREEN_SENSOR_LANDSCAPE:
 		case OS::SCREEN_SENSOR_PORTRAIT:
+			NSLog(@"YESSSSS");
 			return YES;
 		default:
+			NSLog(@"XXXX>>>>>>: %d", OS::get_singleton()->get_screen_orientation());
 			return NO;
 	}
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+	NSLog(@"SUSPPPPP");
 	if (!OSIPhone::get_singleton()) {
 		return UIInterfaceOrientationMaskAll;
 	}
+	NSLog(@"SUSPPPPP222");
 
+	NSLog(@"XXXX>>>>>>: %d", OS::get_singleton()->get_screen_orientation());
 	switch (OS::get_singleton()->get_screen_orientation()) {
 		case OS::SCREEN_PORTRAIT:
 			return UIInterfaceOrientationMaskPortrait;
