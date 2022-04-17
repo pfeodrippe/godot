@@ -376,6 +376,7 @@ class InputEventMouseMotion : public InputEventMouse {
 	float pressure;
 	Vector2 relative;
 	Vector2 speed;
+	Array coalesced_events;
 
 protected:
 	static void _bind_methods();
@@ -392,6 +393,9 @@ public:
 
 	void set_speed(const Vector2 &p_speed);
 	Vector2 get_speed() const;
+
+	void set_coalesced_events(const Array p_coalesced_events);
+	Array get_coalesced_events() const;
 
 	virtual Ref<InputEvent> xformed_by(const Transform2D &p_xform, const Vector2 &p_local_ofs = Vector2()) const;
 	virtual String as_text() const;

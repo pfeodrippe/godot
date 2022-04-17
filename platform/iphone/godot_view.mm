@@ -364,8 +364,15 @@ static const int max_touches = 8;
 			CGVector tilt = [touch azimuthUnitVectorInView:self];
 
 			if (touch.type == UITouchTypeStylus) {
+				NSArray *coalescedTouches = [event coalescedTouchesForTouch:touch];
+				Array cArray{};
+				for (int i = 0; i < [coalescedTouches count]; ++i) {
+					CGPoint t = [[coalescedTouches objectAtIndex:i] preciseLocationInView:self];
+		            cArray.push_back(Vector2(t.x * self.contentScaleFactor, t.y * self.contentScaleFactor));
+				}
+
 				OSIPhone::get_singleton()->pencil_drag(tid, prev_point.x * self.contentScaleFactor, prev_point.y * self.contentScaleFactor, touchPoint.x * self.contentScaleFactor, touchPoint.y * self.contentScaleFactor, force,
-					Vector2(tilt.dx, tilt.dy));
+					Vector2(tilt.dx, tilt.dy), cArray);
 			} else {
 				OSIPhone::get_singleton()->touch_drag(tid, prev_point.x * self.contentScaleFactor, prev_point.y * self.contentScaleFactor, touchPoint.x * self.contentScaleFactor, touchPoint.y * self.contentScaleFactor);
 			}

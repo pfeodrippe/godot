@@ -597,11 +597,25 @@ Vector2 InputEventMouseMotion::get_speed() const {
 	return speed;
 }
 
+void InputEventMouseMotion::set_coalesced_events(Array p_coalesced_events) {
+	coalesced_events = p_coalesced_events;
+}
+
+Array InputEventMouseMotion::get_coalesced_events() const {
+	return coalesced_events;
+}
+
 Ref<InputEvent> InputEventMouseMotion::xformed_by(const Transform2D &p_xform, const Vector2 &p_local_ofs) const {
 	Vector2 g = get_global_position();
 	Vector2 l = p_xform.xform(get_position() + p_local_ofs);
 	Vector2 r = p_xform.basis_xform(get_relative());
 	Vector2 s = p_xform.basis_xform(get_speed());
+
+	Array cs = Array();
+	Array ces = get_coalesced_events();
+	for (int i = 0; i < ces.size(); i++) {
+		cs.push_back(p_xform.xform((Vector2)ces.get(i) + p_local_ofs));
+	}
 
 	Ref<InputEventMouseMotion> mm;
 	mm.instance();
@@ -613,6 +627,7 @@ Ref<InputEvent> InputEventMouseMotion::xformed_by(const Transform2D &p_xform, co
 	mm->set_position(l);
 	mm->set_pressure(get_pressure());
 	mm->set_tilt(get_tilt());
+	mm->set_coalesced_events(cs);
 	mm->set_global_position(g);
 
 	mm->set_button_mask(get_button_mask());
@@ -698,10 +713,14 @@ void InputEventMouseMotion::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_speed", "speed"), &InputEventMouseMotion::set_speed);
 	ClassDB::bind_method(D_METHOD("get_speed"), &InputEventMouseMotion::get_speed);
 
+	ClassDB::bind_method(D_METHOD("set_coalesced_events", "coalesced_events"), &InputEventMouseMotion::set_coalesced_events);
+	ClassDB::bind_method(D_METHOD("get_coalesced_events"), &InputEventMouseMotion::get_coalesced_events);
+
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "tilt"), "set_tilt", "get_tilt");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "pressure"), "set_pressure", "get_pressure");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "relative"), "set_relative", "get_relative");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "speed"), "set_speed", "get_speed");
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "coalesced_events"), "set_coalesced_events", "get_coalesced_events");
 }
 
 InputEventMouseMotion::InputEventMouseMotion() {

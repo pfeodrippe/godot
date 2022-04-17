@@ -227,17 +227,7 @@ void OSIPhone::pencil_press(int p_idx, int p_x, int p_y, bool p_pressed, bool p_
 	perform_event(ev);
 };
 
-void OSIPhone::pencil_drag(int p_idx, int p_prev_x, int p_prev_y, int p_x, int p_y, float p_force) {
-	Ref<InputEventMouseMotion> ev;
-	ev.instance();
-	ev->set_pressure(p_force);
-	ev->set_position(Vector2(p_x, p_y));
-	ev->set_global_position(Vector2(p_x, p_y));
-	ev->set_relative(Vector2(p_x - p_prev_x, p_y - p_prev_y));
-	perform_event(ev);
-};
-
-void OSIPhone::pencil_drag(int p_idx, int p_prev_x, int p_prev_y, int p_x, int p_y, float p_force, Vector2 tilt) {
+void OSIPhone::pencil_drag(int p_idx, int p_prev_x, int p_prev_y, int p_x, int p_y, float p_force, Vector2 tilt, Array p_coalesced_events) {
 	Ref<InputEventMouseMotion> ev;
 	ev.instance();
 	ev->set_pressure(p_force);
@@ -245,6 +235,7 @@ void OSIPhone::pencil_drag(int p_idx, int p_prev_x, int p_prev_y, int p_x, int p
 	ev->set_global_position(Vector2(p_x, p_y));
 	ev->set_relative(Vector2(p_x - p_prev_x, p_y - p_prev_y));
 	ev->set_tilt(tilt);
+	ev->set_coalesced_events(p_coalesced_events);
 	perform_event(ev);
 };
 
